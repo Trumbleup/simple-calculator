@@ -28,29 +28,29 @@ function divide (a, b) {
 	return a/b
 }
 
+function getAnswer (arr) {
+	const refArray = arr;
+	const firstValue = refArray[0];
+	const operator = refArray[1];
+	const lastValue = refArray[2];
+	return operate(firstValue, lastValue, operator);
+}
+
 const display = document.getElementById('display');
 const buttons = document.querySelectorAll('.button');
 let operationArray = [];
-let lastAnswer = 0;
+let recentAnswer = 0;
 buttons.forEach(button => {
 	button.addEventListener('click', () => {
 		const value = button.getAttribute('value');
-		if (value == '=') {		// if the '=' button is pressed, evaluate the final 2 number operation
-			const refArray = operationArray;
-			const firstValue = refArray[0];
-			const operator = refArray[1];
-			const lastValue = refArray[2];
-			const newAnswer = operate(firstValue, lastValue, operator);
+		if (value == '=') {	// if the '=' button is pressed, evaluate the final 2 number operation
+			const newAnswer = getAnswer(operationArray);
 			display.innerHTML = newAnswer;
 			operationArray = []; 
 		} else if (value == '+' || value == '-' || value == '*' || value == '/') { // if an operator button is pressed
-			if (operationArray.length == 2) { // if the operation array already has 2 numbers
-				const refArray = operationArray;
-				const firstValue = refArray[0];
-				const operator = refArray[1];
-				const lastValue = refArray[2];
-				const newAnswer = operate(firstValue, lastValue, operator);
-				operationArray = [...newAnswer];
+			if (operationArray.length == 3) { // if the operation array already has 2 numbers
+				const newAnswer = getAnswer(operationArray);
+				operationArray = [newAnswer];
 				display.innerHTML = newAnswer;
 			}
 			operationArray.push(value);
