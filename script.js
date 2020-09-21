@@ -1,3 +1,48 @@
+const display = document.getElementById('display');
+const clear = document.getElementById('clear');
+const buttons = document.querySelectorAll('.button');
+let operationArray = []; //2 values and operator for operation are stored here
+let currentInput = ''; // current value being inputted
+let currentAnswer = ''; // solution to operation chain
+buttons.forEach(button => {
+	button.addEventListener('click', () => {
+		const value = button.getAttribute('value');
+		if (value == '=') {	// if the '=' button is pressed, evaluate the final 2 number operation
+			operationArray.push(currentInput);
+			const newAnswer = getAnswer(operationArray);
+			operationArray = []; 
+			currentInput = '';
+			currentAnswer = newAnswer;
+			display.innerHTML = newAnswer;
+		} else if (value == '+' || value == '-' || value == '*' || value == '/') { // if an operator button is pressed
+			if (currentInput == '') { // if an operator is pressed before numbers are inputted or after '=' has been pressed.
+				if (currentAnswer == '') {
+					display.innerHTML = 'Please submit a number before selecting an operator';
+				} else {
+					operationArray.push(currentAnswer);
+					operationArray.push(value);
+				}
+			} else {
+				operationArray.push(currentInput); // push the number inputed before the operator was selected
+				currentInput = ''; // reinitialize the current input
+				if (operationArray.length == 3) { // if the operation array already has 2 numbers
+					const newAnswer = getAnswer(operationArray);
+					operationArray = [newAnswer];
+					display.innerHTML = newAnswer;
+				} 
+				operationArray.push(value);
+			}
+		} else { // for all numbers and decimals
+			let refValue = value;
+			currentInput += refValue;
+			display.innerHTML = currentInput;
+		}
+	})
+})
+
+
+
+
 function operate (a, b, operator) {
 	const parsedA = parseInt(a);
 	const parsedB = parseInt(b);
@@ -35,30 +80,5 @@ function getAnswer (arr) {
 	const lastValue = refArray[2];
 	return operate(firstValue, lastValue, operator);
 }
-
-const display = document.getElementById('display');
-const buttons = document.querySelectorAll('.button');
-let operationArray = [];
-let recentAnswer = 0;
-buttons.forEach(button => {
-	button.addEventListener('click', () => {
-		const value = button.getAttribute('value');
-		if (value == '=') {	// if the '=' button is pressed, evaluate the final 2 number operation
-			const newAnswer = getAnswer(operationArray);
-			display.innerHTML = newAnswer;
-			operationArray = []; 
-		} else if (value == '+' || value == '-' || value == '*' || value == '/') { // if an operator button is pressed
-			if (operationArray.length == 3) { // if the operation array already has 2 numbers
-				const newAnswer = getAnswer(operationArray);
-				operationArray = [newAnswer];
-				display.innerHTML = newAnswer;
-			}
-			operationArray.push(value);
-		} else { // for all numbers and decimals
-			operationArray.push(value);
-			display.innerHTML = value;
-		}
-	})
-})
 
 
