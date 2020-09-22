@@ -8,12 +8,16 @@ buttons.forEach(button => {
 	button.addEventListener('click', () => {
 		const value = button.getAttribute('value');
 		if (value == '=') {	// if the '=' button is pressed, evaluate the final 2 number operation
+			if (currentInput == '') {
+				return
+			}
 			operationArray.push(currentInput);
 			const newAnswer = getAnswer(operationArray);
+			const roundedAnswer = Math.round(newAnswer * 1000) / 1000;
 			operationArray = []; 
 			currentInput = '';
-			currentAnswer = newAnswer;
-			display.innerHTML = newAnswer;
+			currentAnswer = roundedAnswer;
+			display.innerHTML = roundedAnswer;
 		} else if (value == '+' || value == '-' || value == '*' || value == '/') { // if an operator button is pressed
 			if (currentInput == '') { // if an operator is pressed before numbers are inputted or after '=' has been pressed.
 				if (currentAnswer == '') {
@@ -27,11 +31,17 @@ buttons.forEach(button => {
 				currentInput = ''; // reinitialize the current input
 				if (operationArray.length == 3) { // if the operation array already has 2 numbers
 					const newAnswer = getAnswer(operationArray);
-					operationArray = [newAnswer];
-					display.innerHTML = newAnswer;
+					const roundedAnswer = Math.round(newAnswer * 1000) / 1000;
+					operationArray = [roundedAnswer];
+					display.innerHTML = roundedAnswer;
 				} 
 				operationArray.push(value);
 			}
+		} else if (value == 'clear') {
+			operationArray = [];
+			currentInput = '';
+			currentAnswer = '';
+			display.innerHTML = '';
 		} else { // for all numbers and decimals
 			let refValue = value;
 			currentInput += refValue;
@@ -44,8 +54,8 @@ buttons.forEach(button => {
 
 
 function operate (a, b, operator) {
-	const parsedA = parseInt(a);
-	const parsedB = parseInt(b);
+	const parsedA = parseFloat(a);
+	const parsedB = parseFloat(b);
 	if (operator == '+') {
 		return add(parsedA,parsedB);
 	} else if (operator == '-') {
